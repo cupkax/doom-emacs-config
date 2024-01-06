@@ -1,0 +1,1152 @@
+#+title: Doom Emacs Config
+#+author: cupkax
+#+email: cupkax@protonmail.com
+#+property: header-args:emacs-lisp :tangle yes :comments link
+#+property: header-args:elisp :exports code
+#+property: header-args:shell :tangle "setup.sh"
+#+property: header-args :tangle no :results silent :eval no-export
+#+options: coverpage:yes
+#+startup: fold
+
+* =Init.el=
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+This section controls the Doom modules tangled to =init.el=
+#+name: init.el
+#+attr_html: :collapsed t
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :noweb-prefix no :comments no
+;;; init.el -*- lexical-binding: t; -*-
+(doom! :input
+       <<doom-input>>
+
+       :completion
+       <<doom-completion>>
+
+       :ui
+       <<doom-ui>>
+
+       :editor
+       <<doom-editor>>
+
+       :emacs
+       <<doom-emacs>>
+
+       :term
+       <<doom-term>>
+
+       :checkers
+       <<doom-checkers>>
+
+       :tools
+       <<doom-tools>>
+
+       :os
+       <<doom-os>>
+
+       :lang
+       <<doom-lang>>
+
+       :email
+       <<doom-email>>
+
+       :app
+       <<doom-app>>
+
+       :config
+       <<doom-config>>
+       )
+#+end_src
+** Literate Config
+#+name: doom-config
+#+begin_src emacs-lisp
+literate
+(default +bindings +smartparens)
+#+end_src
+
+** Rest of the config
+#+name: doom-completion
+#+begin_src emacs-lisp
+(company                     ; the ultimate code completion backend
+ +childframe)                ; ... when your children are better than you
+;;helm                       ; the *other* search engine for love and life
+;;ido                        ; the other *other* search engine...
+;; (ivy                      ; a search engine for love and life
+;;  +icons                   ; ... icons are nice
+;;  +prescient)              ; ... I know what I want(ed)
+(vertico
+ +childframe
+ +icons)             ; the search engine of the future
+#+end_src
+
+#+name: doom-ui
+#+begin_src emacs-lisp
+;;deft                       ; notational velocity for Emacs
+doom                         ; what makes DOOM look the way it does
+doom-dashboard               ; a nifty splash screen for Emacs
+doom-quit                    ; DOOM quit-message prompts when you quit Emacs
+(emoji +unicode)          ; ð
+;;fill-column                ; a `fill-column' indicator
+hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+;;hydra                      ; quick documentation for related commands
+;;indent-guides              ; highlighted indent columns, notoriously slow
+(ligatures +extra)           ; ligatures and symbols to make your code pretty again
+;;minimap                    ; show a map of the code on the side
+modeline                     ; snazzy, Atom-inspired modeline, plus API
+nav-flash                    ; blink the current line after jumping
+;;neotree                    ; a project drawer, like NERDTree for vim
+ophints                      ; highlight the region an operation acts on
+(popup                       ; tame sudden yet inevitable temporary windows
+ +all                        ; catch all popups that start with an asterix
+ +defaults)                  ; default popup rules
+;;(tabs                      ; an tab bar for Emacs
+;;  +centaur-tabs)           ; ... with prettier tabs
+treemacs                     ; a project drawer, like neotree but cooler
+unicode                    ; extended unicode support for various languages
+(vc-gutter +pretty)          ; vcs diff in the fringe
+vi-tilde-fringe              ; fringe tildes to mark beyond EOB
+(window-select +numbers)     ; visually switch windows
+workspaces                   ; tab emulation, persistence & separate workspaces
+zen                          ; distraction-free coding or writing
+#+end_src
+
+#+name: doom-editor
+#+begin_src emacs-lisp
+(evil +everywhere)           ; come to the dark side, we have cookies
+file-templates               ; auto-snippets for empty files
+fold                         ; (nigh) universal code folding
+(format
+ +onsave)                     ; automated prettiness
+;;god                        ; run Emacs commands without modifier keys
+;;lispy                      ; vim for lisp, for people who don't like vim
+multiple-cursors             ; editing in many places at once
+;;objed                      ; text object editing for the innocent
+;;parinfer                   ; turn lisp into python, sort of
+rotate-text                  ; cycle region at point between text candidates
+snippets                     ; my elves. They type so I don't have to
+;;word-wrap                  ; soft wrapping with language-aware indent
+#+end_src
+
+#+name: doom-emacs
+#+begin_src emacs-lisp
+(dired +icons)               ; making dired pretty [functional]
+electric                     ; smarter, keyword-based electric-indent
+(ibuffer +icons)             ; interactive buffer management
+undo                         ; persistent, smarter undo for your inevitable mistakes
+vc                           ; version-control and Emacs, sitting in a tree
+#+end_src
+
+#+name: doom-term
+#+begin_src emacs-lisp
+;;eshell                     ; the elisp shell that works everywhere
+;;shell                      ; simple shell REPL for Emacs
+;;term                       ; basic terminal emulator for Emacs
+vterm                        ; the best terminal emulation in Emacs
+#+end_src
+
+#+name: doom-checkers
+#+begin_src emacs-lisp
+syntax                       ; tasing you for every semicolon you forget
+(:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+grammar                      ; tasing grammar mistake every you make
+#+end_src
+
+#+name: doom-tools
+#+begin_src emacs-lisp
+ansible                      ; a crucible for infrastructure as code
+biblio                       ; Writes a PhD for you (citation needed)
+;;debugger                   ; FIXME stepping through code, to help you add bugs
+;;direnv                     ; be direct about your environment
+;;docker                       ; port everything to containers
+;;editorconfig               ; let someone else argue about tabs vs spaces
+;;ein                        ; tame Jupyter notebooks with emacs
+(eval +overlay)              ; run code, run (also, repls)
+;;gist                       ; interacting with github gists
+(lookup                      ; helps you navigate your code and documentation
+ +dictionary                 ; dictionary/thesaurus is nice
+ +docsets)                   ; ...or in Dash docsets locally
+lsp                          ; Language Server Protocol
+;;macos                      ; MacOS-specific commands
+(magit                       ; a git porcelain for Emacs
+ +forge)                     ; interface with git forges
+make                         ; run make tasks from Emacs
+;;pass                       ; password manager for nerds
+pdf                          ; pdf enhancements
+;;prodigy                    ; FIXME managing external services & code builders
+rgb                          ; creating color strings
+;;taskrunner                 ; taskrunner for all your projects
+;;terraform                  ; infrastructure as code
+;;tmux                       ; an API for interacting with tmux
+tree-sitter                  ; syntax and parsing, sitting in a tree...
+upload                       ; map local to remote projects via ssh/ftp
+#+end_src
+
+#+name: doom-os
+#+begin_src emacs-lisp
+tty                          ; improve the terminal Emacs experience
+#+end_src
+
+** Language Support
+#+name: doom-lang
+#+begin_src emacs-lisp
+;;agda                       ; types of types of types of types...
+;;beancount                  ; mind the GAAP
+;;(cc +lsp)                  ; C > C++ == 1
+;;clojure                    ; java with a lisp
+;;common-lisp                ; if you've seen one lisp, you've seen them all
+;;coq                        ; proofs-as-programs
+;;crystal                    ; ruby at the speed of c
+;;csharp                     ; unity, .NET, and mono shenanigans
+data                         ; config/data formats
+;;(dart +flutter)            ; paint ui and not much else
+;;dhall                      ; JSON with FP sprinkles
+;;elixir                     ; erlang done right
+;;elm                        ; care for a cup of TEA?
+emacs-lisp                   ; drown in parentheses
+;;erlang                     ; an elegant language for a more civilized age
+(ess
+ +tree-sitter)               ; emacs speaks statistics
+;;faust                      ; dsp, but you get to keep your soul
+;;fsharp                     ; ML stands for Microsoft's Language
+;;fstar                      ; (dependent) types and (monadic) effects and Z3
+;;gdscript                   ; the language you waited for
+;;(graphql +lsp)             ; Give queries a REST
+;;(go +lsp)                    ; the hipster dialect
+;;(haskell +lsp)             ; a language that's lazier than I am
+;;hy                         ; readability of scheme w/ speed of python
+;;idris                      ;
+json                         ; At least it ain't XML
+;;(java +lsp)                ; the poster child for carpal tunnel syndrome
+;;(javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
+;;(julia +lsp)                 ; Python, R, and MATLAB in a blender
+;;kotlin                     ; a better, slicker Java(Script)
+(latex                       ; writing papers in Emacs has never been so fun
+ +lsp
+ +latexmk                    ; what else would you use?
+ +cdlatex                    ; quick maths symbols
+ +fold)                      ; fold the clutter away nicities
+;;lean                       ; proof that mathematicians need help
+;;factor                     ; for when scripts are stacked against you
+;;ledger                     ; an accounting system in Emacs
+;;lua                          ; one-based indices? one-based indices
+markdown                     ; writing docs for people to ignore
+;;nim                        ; python + lisp at the speed of c
+;;nix                          ; I hereby declare "nix geht mehr!"
+;;ocaml                      ; an objective camel
+(org                         ; organize your plain life in plain text
+ +dragndrop                  ; drag & drop files/images into org buffers
+ +hugo                     ; use Emacs for hugo blogging
+ +noter                      ; enhanced PDF notetaking
+ +jupyter                    ; ipython/jupyter support for babel
+ +pandoc                     ; export-with-pandoc support
+ +gnuplot                    ; who doesn't like pretty pictures
+ +journal
+ +noter
+ ;;+pomodoro                 ; be fruitful with the tomato technique
+ +present                    ; using org-mode for presentations
+ +roam2)                     ; wander around notes
+;;php                        ; perl's insecure younger brother
+plantuml                   ; diagrams for confusing people more
+;;purescript                 ; javascript, but functional
+(python +lsp +pyright)       ; beautiful is better than ugly
+;;qt                         ; the 'cutest' gui framework ever
+;;racket                     ; a DSL for DSLs
+;;raku                       ; the artist formerly known as perl6
+;;rest                       ; Emacs as a REST client
+;;rst                        ; ReST in peace
+;;(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+;;(rust +lsp)                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+;;scala                      ; java, but good
+;;scheme                       ; a fully conniving family of lisps
+(sh
+ +lsp
+ +tree-sitter)                           ; she sells {ba,z,fi}sh shells on the C xor
+;;sml                        ; no, the /other/ ML
+;;solidity                   ; do you need a blockchain? No.
+;;swift                      ; who asked for emoji variables?
+;;terra                      ; Earth and Moon in alignment for performance.
+web                          ; the tubes
+(yaml
+ +lsp
+ +tree-sitter)                         ; JSON, but readable
+;;zig                        ; C, but simpler
+#+end_src
+
+** Input
+#+name: doom-input
+#+begin_src emacs-lisp
+;;bidi                       ; (tfel ot) thgir etirw uoy gnipleh
+;;chinese
+;;japanese
+;;layout                     ; auie,ctsrnm is the superior home row
+#+end_src
+
+** Everything in Emacs
+#+name: doom-email
+#+begin_src emacs-lisp
+(:if (executable-find "mu") (mu4e +org))
+;;notmuch
+;;(wanderlust +gmail)
+#+end_src
+
+#+name: doom-app
+#+begin_src emacs-lisp
+;;calendar                   ; A dated approach to timetabling
+;;emms                       ; Multimedia in Emacs is music to my ears
+;;everywhere                   ; *leave* Emacs!? You must be joking.
+irc                          ; how neckbeards socialize
+(rss +org)                   ; emacs as an RSS reader
+;;twitter                    ; twitter client https://twitter.com/vnought
+#+end_src
+
+* Lexical Bindings
+#+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+end_src
+
+* Startup
+** Identity
+#+begin_src emacs-lisp
+(setq user-full-name "cupkax"
+      user-mail-address "cupkax@protonmail.com")
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil) ; default=7200s (2h)
+#+end_src
+
+** Better Defaults
+#+begin_src emacs-lisp
+(setq-default delete-by-moving-to-trash t
+              window-combination-resize t
+              x-stretch-cursor t)
+(setq undo-limit 80000000
+      inhibit-compacting-font-caches t
+      evil-want-fine-undo t
+      load-prefer-newer t
+      tab-width 4
+      auto-save-default t
+      password-cache-expiry nil
+      scroll-margin 2)
+
+(global-subword-mode 1)
+
+;; mouse
+(xterm-mouse-mode 1)
+(defun track-mouse (e))
+(setq mouse-sel-mode t)
+(setq mouse-wheel-scroll-amount
+      '(5
+        ((shift) . hscroll)
+        ((meta) . nil)
+        ((control) . text-scale)))
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
+(general-auto-unbind-keys :off)
+(remove-hook 'doom-after-init-modules-hook #'general-auto-unbind-keys)
+#+end_src
+** =Custom.el=
+#+begin_src emacs-lisp
+(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir ))
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+end_src
+** =utf-8-unix= System
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8)
+
+(defun cpkx/disable-macwin ()
+  (let ((coding-str (symbol-name buffer-file-coding-system)))
+    (when (string-match "-\\(?:dos\\|mac\\)$" coding-str)
+      (set-buffer-file-coding-system 'unix))))
+
+(add-hook 'find-file-hook 'cpkx/disable-macwin)
+
+;; Set Default coding system for clipboard. Because apparently windows fucks it up somehow
+(set-clipboard-coding-system 'utf-8)
+#+end_src
+** WSL Default Application
+#+begin_src emacs-lisp
+;; WSL-specific setup
+(when (and (eq system-type 'gnu/linux)
+           (getenv "WSLENV"))
+(let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
+      (cmd-args '("/c" "start")))
+  (when (file-exists-p cmd-exe)
+;; Enable emacs to open links in Windows
+    (setq browse-url-generic-program cmd-exe
+          browse-url-generic-args cmd-args
+          browse-url-browser-function 'browse-url-generic))))
+#+end_src
+* Visual Settings
+** Fonts
+*** Set Fonts
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 21)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 32)
+      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
+#+end_src
+*** Mixed Pitch
+**** Basic Mixed Pitch Settings
+#+begin_src emacs-lisp
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 22))
+
+(after! mixed-pitch
+  (setq mixed-pitch-set-height t)
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
+
+(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
+#+end_src
+**** Variable Pitch Serif Font
+#+begin_src emacs-lisp
+(defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+
+(defcustom variable-pitch-serif-font (font-spec :family "serif")
+  "The font face used for `variable-pitch-serif'."
+  :group 'basic-faces
+  :set (lambda (symbol value)
+         (set-face-attribute 'variable-pitch-serif nil :font value)
+         (set-default-toplevel-value symbol value)))
+#+end_src
+** Modeline
+*** Show time
+#+begin_src emacs-lisp
+(setq display-time-24hr-format t)
+(display-time-mode 1)
+#+end_src
+*** Hide Redundant Stuff
+#+begin_src emacs-lisp
+(setq-default display-time-default-load-average nil
+              display-time-load-average nil)
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
+                                 '(coding-category-undecided coding-category-utf-8))
+                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
+                t)))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-one)
+(delq! t custom-theme-load-path)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+#+end_src
+** Lines
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+#+end_src
+** Parens
+#+begin_src emacs-lisp
+(after! smartparens
+  (show-smartparens-global-mode 1))
+#+end_src
+** Emojis
+*** Base emoji config
+#+begin_src emacs-lisp
+(setq emojify-emoji-set "twemoji-v2")
+
+(defvar emojify-disabled-emojis
+  '(;; Org
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
+    ;; Terminal powerline
+    "✔"
+    ;; Box drawing
+    "▶" "◀"
+    ;; I just want to see this as text
+    "©" "™")
+  "Characters that should never be affected by `emojify-mode'.")
+
+(defadvice! emojify-delete-from-data ()
+  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+  :after #'emojify-set-emoji-data
+  (dolist (emoji emojify-disabled-emojis)
+    (remhash emoji emojify-emojis)))
+
+(defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
+  "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
+  (if (or (not emoticon-to-emoji) (= 1 (length text)))
+      (funcall orig-fn emoji text buffer start end target)
+    (delete-region start end)
+    (insert (ht-get emoji "unicode"))))
+
+(define-minor-mode emoticon-to-emoji
+  "Write ascii/gh emojis, and have them converted to unicode live."
+  :global nil
+  :init-value nil
+  (if emoticon-to-emoji
+      (progn
+        (setq-local emojify-emoji-styles '(ascii github unicode))
+        (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
+        (unless emojify-mode
+          (emojify-turn-on-emojify-mode)))
+    (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
+    (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
+
+(add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
+#+end_src
+*** Some notes for emojis
+By default a subset of unicode don't seem to work.
+At the moment I was able to fix this by:
+1. Install an emoji font
+2. Enable =emoji+unicode= in =init.el=
+3. Run install commands for =all-the-icons= and =nerd-icons=
+
+* Buffer, Frame and Window Configuration
+** Frame Config
+*** Frame sizing
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
+#+end_src
+** Window Config
+*** Window Navigation
+#+begin_src emacs-lisp
+(map!
+ :leader
+ :desc "Switch to Left Window"  "<left>"    #'evil-window-left
+ :desc "Switch to Right Window" "<right>"   #'evil-window-right
+ :desc "Switch to Up Window"    "<up>"      #'evil-window-up
+ :desc "Switch to Down Window"  "<down>"    #'evil-window-down)
+
+#+end_src
+*** Window Split
+#+begin_src emacs-lisp
+(setq evil-vsplit-window-right t
+      evil-split-window-below  t)
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (consult-buffer))
+#+end_src
+* Packages
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+This section installs the relevant packages in =packages.el=
+#+begin_src emacs-lisp :tangle "packages.el" :comments no
+;; -*- no-byte-compile: t; -*-
+#+end_src
+** Convenience
+*** Which-key
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0)
+
+;; Replace evil- with a symbol
+(setq which-key-allow-multiple-replacements t)
+(after! which-key
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   ))
+#+end_src
+** Tools
+*** Company
+#+begin_src emacs-lisp
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort))
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
+#+end_src
+**** Plain Text
+#+begin_src emacs-lisp
+(set-company-backend!
+  '(text-mode
+    markdown-mode
+    gfm-mode)
+  '(:seperate
+    company-ispell
+    company-files
+    company-yasnippet))
+#+end_src
+*** Consult
+Disable face for differing buffers as Marginalia handles it
+#+begin_src emacs-lisp
+(after! consult
+  (set-face-attribute 'consult-file nil :inherit 'consult-buffer)
+  (setf (plist-get (alist-get 'perl consult-async-split-styles-alist) :initial) ";"))
+#+end_src
+*** Evil
+Some cursor and substitute settings
+#+begin_src emacs-lisp
+(setq evil-move-beyond-eol t
+      evil-move-cursor-back nil
+      evil-kill-on-visual-paste nil
+      evil-visual-region-expanded t)
+
+(defalias #'forward-evil-word #'forward-evil-symbol)
+
+
+(after! evil
+  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
+#+end_src
+*** Ispell
+**** Get Dictionaries
+Get a dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with the following configuration
+- size :: 80 (huge)
+- spellings :: British(-ise) and Australian
+- spelling variants level :: 0
+- diacritics :: keep
+- extra lists :: hacker, roman numerals
+#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
+cd /tmp
+curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
+tar -xjf "aspell6-en-custom.tar.bz2"
+
+cd aspell6-en-custom
+./configure && make && sudo make install
+#+end_src
+**** Configuration
+#+begin_src emacs-lisp
+(setq ispell-dictionary "en-custom")
+(setq ispell-personal-dictionary
+      (expand-file-name "misc/ispell_personal" doom-private-dir))
+#+end_src
+*** Auto Snippets
+#+begin_src emacs-lisp :tangle packages.el
+(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! aas
+  :commands aas-mode)
+#+end_src
+*** YASnippet
+#+begin_src emacs-lisp
+(setq yas-triggers-in-field t)
+#+end_src
+*** Very Large Files
+#+begin_src emacs-lisp :tangle "packages.el"
+(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
+  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
+#+end_src
+
+Load VLF
+#+begin_src emacs-lisp
+(use-package! vlf-setup
+  :defer-incrementally vlf-tune vlf-base vlf-write
+  vlf-search vlf-occur vlf-follow vlf-ediff vlf
+  :commands vlf vlf-mode
+  :init
+  <<vlf-largefile-prompt>>
+  :config
+  (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
+  <<vlf-linenum-offset>>
+  <<vlf-search-chunking>>)
+#+end_src
+
+Disable aggressive abort on opening large files
+#+name: vlf-largefile-prompt
+#+begin_src emacs-lisp :noweb-ref none
+(defadvice! +files--ask-about-large-file-vlf (size op-type filename offer-raw)
+  "Like `files--ask-user-about-large-file', but with support for `vlf'."
+  :override #'files--ask-user-about-large-file
+  (if (eq vlf-application 'dont-ask)
+      (progn (vlf filename) (error ""))
+    (let ((prompt (format "File %s is large (%s), really %s?"
+                          (file-name-nondirectory filename)
+                          (funcall byte-count-to-string-function size) op-type)))
+      (if (not offer-raw)
+          (if (y-or-n-p prompt) nil 'abort)
+        (let ((choice
+               (car
+                (read-multiple-choice
+                 prompt '((?y "yes")
+                          (?n "no")
+                          (?l "literally")
+                          (?v "vlf"))
+                 (files--ask-user-about-large-file-help-text
+                  op-type (funcall byte-count-to-string-function size))))))
+          (cond ((eq choice ?y) nil)
+                ((eq choice ?l) 'raw)
+                ((eq choice ?v)
+                 (vlf filename)
+                 (error ""))
+                (t 'abort)))))))
+#+end_src
+
+Change lines numbers while switching chunks
+#+name: vlf-linenum-offset
+#+begin_src emacs-lisp :noweb-ref none
+(defvar-local +vlf-cumulative-linenum '((0 . 0))
+  "An alist keeping track of the cumulative line number.")
+
+(defun +vlf-update-linum ()
+  "Update the line number offset."
+  (let ((linenum-offset (alist-get vlf-start-pos +vlf-cumulative-linenum)))
+    (setq display-line-numbers-offset (or linenum-offset 0))
+    (when (and linenum-offset (not (assq vlf-end-pos +vlf-cumulative-linenum)))
+      (push (cons vlf-end-pos (+ linenum-offset
+                                 (count-lines (point-min) (point-max))))
+            +vlf-cumulative-linenum))))
+
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-update-linum)
+
+;; Since this only works with absolute line numbers, let's make sure we use them.
+(add-hook! 'vlf-mode-hook (setq-local display-line-numbers t))
+#+end_src
+Fix searching
+#+name: vlf-search-chunking
+#+begin_src emacs-lisp :noweb-ref none
+(defun +vlf-next-chunk-or-start ()
+  (if (= vlf-file-size vlf-end-pos)
+      (vlf-jump-to-chunk 1)
+    (vlf-next-batch 1))
+  (goto-char (point-min)))
+
+(defun +vlf-last-chunk-or-end ()
+  (if (= 0 vlf-start-pos)
+      (vlf-end-of-file)
+    (vlf-prev-batch 1))
+  (goto-char (point-max)))
+
+(defun +vlf-isearch-wrap ()
+  (if isearch-forward
+      (+vlf-next-chunk-or-start)
+    (+vlf-last-chunk-or-end)))
+
+(add-hook! 'vlf-mode-hook (setq-local isearch-wrap-function #'+vlf-isearch-wrap))
+#+end_src
+** Other Visual Settings
+*** Info Colours
+Improves manual pages
+#+begin_src emacs-lisp :tangle packages.el
+(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
+#+end_src
+Hook into =Info=
+#+begin_src emacs-lisp
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+#+end_src
+*** Marginalia
+#+begin_src emacs-lisp
+(after! marginalia
+  (setq marginalia-censor-variables nil)
+
+  (defadvice! +marginalia--anotate-local-file-colorful (cand)
+    "Just a more colourful version of `marginalia--anotate-local-file'."
+    :override #'marginalia--annotate-local-file
+    (when-let (attrs (file-attributes (substitute-in-file-name
+                                       (marginalia--full-candidate cand))
+                                      'integer))
+      (marginalia--fields
+       ((marginalia--file-owner attrs)
+        :width 12 :face 'marginalia-file-owner)
+       ((marginalia--file-modes attrs))
+       ((+marginalia-file-size-colorful (file-attribute-size attrs))
+        :width 7)
+       ((+marginalia--time-colorful (file-attribute-modification-time attrs))
+        :width 12))))
+
+  (defun +marginalia--time-colorful (time)
+    (let* ((seconds (float-time (time-subtract (current-time) time)))
+           (color (doom-blend
+                   (face-attribute 'marginalia-date :foreground nil t)
+                   (face-attribute 'marginalia-documentation :foreground nil t)
+                   (/ 1.0 (log (+ 3 (/ (+ 1 seconds) 345600.0)))))))
+      ;; 1 - log(3 + 1/(days + 1)) % grey
+      (propertize (marginalia--time time) 'face (list :foreground color))))
+
+  (defun +marginalia-file-size-colorful (size)
+    (let* ((size-index (/ (log10 (+ 1 size)) 7.0))
+           (color (if (< size-index 10000000) ; 10m
+                      (doom-blend 'orange 'green size-index)
+                    (doom-blend 'red 'orange (- size-index 1)))))
+      (propertize (file-size-human-readable size) 'face (list :foreground color)))))
+#+end_src
+*** Prettier Page Breaks
+#+begin_src emacs-lisp :tangle packages.el
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
+  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! page-break-lines
+  :commands page-break-lines-mode
+  :init
+  (autoload 'turn-on-page-break-lines-mode "page-break-lines")
+  :config
+  (setq page-break-lines-max-width fill-column)
+  (map! :prefix "g"
+        :desc "Prev page break" :nv "[" #'backward-page
+        :desc "Next page break" :nv "]" #'forward-page))
+#+end_src
+*** Writeroom
+#+begin_src emacs-lisp
+(setq +zen-text-scale 0.8)
+
+(defvar +zen-serif-p t
+  "Whether to use a serifed font with `mixed-pitch-mode'.")
+(defvar +zen-org-starhide t
+  "The value `org-modern-hide-stars' is set to.")
+
+(after! writeroom-mode
+  (defvar-local +zen--original-org-indent-mode-p nil)
+  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  (defun +zen-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (if writeroom-mode
+          (progn
+            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
+  (defun +zen-prose-org-h ()
+    "Reformat the current Org buffer appearance for prose."
+    (when (eq major-mode 'org-mode)
+      (setq display-line-numbers nil
+            visual-fill-column-width 60
+            org-adapt-indentation nil)
+      (when (featurep 'org-modern)
+        (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
+                    ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                    org-modern-hide-stars +zen-org-starhide)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (setq
+       +zen--original-org-indent-mode-p org-indent-mode)
+      (org-indent-mode -1)))
+  (defun +zen-nonprose-org-h ()
+    "Reverse the effect of `+zen-prose-org'."
+    (when (eq major-mode 'org-mode)
+      (when (bound-and-true-p org-modern-mode)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (when +zen--original-org-indent-mode-p (org-indent-mode 1))))
+  (pushnew! writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-modern-mode
+            'org-modern-star
+            'org-modern-hide-stars)
+  (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
+  (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h))
+
+
+#+end_src
+** Treemacs
+#+begin_src emacs-lisp
+(after! treemacs
+  (defvar treemacs-file-ignore-extensions '()
+    "File extension which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-globs '()
+    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-regexps '()
+    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
+  (defun treemacs-file-ignore-generate-regexps ()
+    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
+  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
+  (defun treemacs-ignore-filter (file full-path)
+    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
+    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
+        (let ((ignore-file nil))
+          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
+            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
+
+(setq treemacs-file-ignore-extensions
+      '(;; LaTeX
+        "aux"
+        "ptc"
+        "fdb_latexmk"
+        "fls"
+        "synctex.gz"
+        "toc"
+        ;; LaTeX - glossary
+        "glg"
+        "glo"
+        "gls"
+        "glsdefs"
+        "ist"
+        "acn"
+        "acr"
+        "alg"
+        ;; LaTeX - pgfplots
+        "mw"
+        ;; LaTeX - pdfx
+        "pdfa.xmpi"
+        ))
+(setq treemacs-file-ignore-globs
+      '(;; LaTeX
+        "*/_minted-*"
+        ;; AucTeX
+        "*/.auctex-auto"
+        "*/_region_.log"
+        "*/_region_.tex"))
+
+
+#+end_src
+* Languages
+** General
+*** File Templates
+#+begin_src emacs-lisp
+(set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
+(set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
+#+end_src
+** Plaintext
+*** Ansi colours
+#+begin_src emacs-lisp
+(after! text-mode
+  (add-hook! 'text-mode-hook
+    (unless (derived-mode-p 'org-mode)
+      ;; Apply ANSI color codes
+      (with-silent-modifications
+        (ansi-color-apply-on-region (point-min) (point-max) t)))))
+#+end_src
+*** Margin w/o line numbers
+#+begin_src emacs-lisp
+(defvar +text-mode-left-margin-width 1
+  "The `left-margin-width' to be used in `text-mode' buffers.")
+
+(defun +setup-text-mode-left-margin ()
+  (when (and (derived-mode-p 'text-mode)
+             (not (and (bound-and-true-p visual-fill-column-mode)
+                       visual-fill-column-center-text))
+             (eq (current-buffer) ; Check current buffer is active.
+                 (window-buffer (frame-selected-window))))
+    (setq left-margin-width (if display-line-numbers
+                                0 +text-mode-left-margin-width))
+    (set-window-buffer (get-buffer-window (current-buffer))
+                       (current-buffer))))
+
+(add-hook 'window-configuration-change-hook #'+setup-text-mode-left-margin)
+(add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
+(add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
+
+(defadvice! +doom/toggle-line-numbers--call-hook-a ()
+  :after #'doom/toggle-line-numbers
+  (run-hooks 'display-line-numbers-mode-hook))
+
+(remove-hook 'text-mode-hook #'display-line-numbers-mode)
+#+end_src
+** Org
+*** System Config
+A new diff mode to git in =~/.config/git/attributes=
+#+begin_src fundamental
+ *.org   diff=org
+#+end_src
+Adding a regex for it to ~/.config/git/config
+#+begin_src gitconfig
+[diff "org"]
+  xfuncname = "^(\\*+ +.*)$"
+#+end_src
+*** Packages
+**** Dev Org
+#+begin_src emacs-lisp :tangle packages.el
+(unpin! org) ; there be bugs
+(package! org-contrib
+  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+           :files ("lisp/*.el"))
+  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
+  #+end_src
+**** Visuals
+***** Org Modern
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-modern
+  :hook (org-mode . org-modern-mode)
+  :config
+  (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
+        org-modern-table-vertical 1
+        org-modern-table-horizontal 0.2
+        org-modern-list '((43 . "➤")
+                          (45 . "–")
+                          (42 . "•"))
+        org-modern-todo-faces
+        '(("TODO" :inverse-video t :inherit org-todo)
+          ("PROJ" :inverse-video t :inherit +org-todo-project)
+          ("STRT" :inverse-video t :inherit +org-todo-active)
+          ("[-]"  :inverse-video t :inherit +org-todo-active)
+          ("HOLD" :inverse-video t :inherit +org-todo-onhold)
+          ("WAIT" :inverse-video t :inherit +org-todo-onhold)
+          ("[?]"  :inverse-video t :inherit +org-todo-onhold)
+          ("KILL" :inverse-video t :inherit +org-todo-cancel)
+          ("NO"   :inverse-video t :inherit +org-todo-cancel))
+        org-modern-footnote
+        (cons nil (cadr org-script-display))
+        org-modern-block-fringe nil
+        org-modern-block-name
+        '((t . t)
+          ("src" "»" "«")
+          ("example" "»–" "–«")
+          ("quote" "❝" "❞")
+          ("export" "⏩" "⏪"))
+        org-modern-progress nil
+        org-modern-priority nil
+        org-modern-horizontal-rule (make-string 36 ?─)
+        org-modern-keyword
+        '((t . t)
+          ("title" . "𝙏")
+          ("subtitle" . "𝙩")
+          ("author" . "𝘼")
+          ("email" . #("" 0 1 (display (raise -0.14))))
+          ("date" . "𝘿")
+          ("property" . "☸")
+          ("options" . "⌥")
+          ("startup" . "⏻")
+          ("macro" . "𝓜")
+          ("bind" . #("" 0 1 (display (raise -0.1))))
+          ("bibliography" . "")
+          ("print_bibliography" . #("" 0 1 (display (raise -0.1))))
+          ("cite_export" . "⮭")
+          ("print_glossary" . #("ᴬᶻ" 0 1 (display (raise -0.1))))
+          ("glossary_sources" . #("" 0 1 (display (raise -0.14))))
+          ("include" . "⇤")
+          ("setupfile" . "⇚")
+          ("html_head" . "🅷")
+          ("html" . "🅗")
+          ("latex_class" . "🄻")
+          ("latex_class_options" . #("🄻" 1 2 (display (raise -0.14))))
+          ("latex_header" . "🅻")
+          ("latex_header_extra" . "🅻⁺")
+          ("latex" . "🅛")
+          ("beamer_theme" . "🄱")
+          ("beamer_color_theme" . #("🄱" 1 2 (display (raise -0.12))))
+          ("beamer_font_theme" . "🄱𝐀")
+          ("beamer_header" . "🅱")
+          ("beamer" . "🅑")
+          ("attr_latex" . "🄛")
+          ("attr_html" . "🄗")
+          ("attr_org" . "⒪")
+          ("call" . #("" 0 1 (display (raise -0.15))))
+          ("name" . "⁍")
+          ("header" . "›")
+          ("caption" . "☰")
+          ("results" . "🠶")))
+  (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
+
+(after! spell-fu
+  (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
+#+end_src
+***** Emphasis Markers
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
+#+end_src
+***** Heading Structure
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
+  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-ol-tree
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
+
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
+
+#+end_src
+**** Some extra things
+***** HTTP requests
+#+begin_src emacs-lisp :tangle packages.el
+(package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! ob-http
+  :commands org-babel-execute:http)
+#+end_src
+***** Transclusion
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-transclusion
+  :commands org-transclusion-mode
+  :init
+  (map! :after org :map org-mode-map
+        "<f12>" #'org-transclusion-mode))
+#+end_src
+***** Heading Graph
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-graph-view
+  :recipe (:host github
+           :repo "alphapapa/org-graph-view"))
+#+end_src
+***** Cooking
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-chef)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-chef
+  :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
+#+end_src
+***** Importing with Pandoc
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-pandoc-import
+  :after org)
+#+end_src
