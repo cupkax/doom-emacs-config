@@ -8,7 +8,7 @@
 #+options: coverpage:yes
 #+startup: fold
 
-* =Init.el=
+* Doom Init
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
 :END:
@@ -299,6 +299,64 @@ irc                          ; how neckbeards socialize
 ;;twitter                    ; twitter client https://twitter.com/vnought
 #+end_src
 
+* Packages
+#+begin_src emacs-lisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+
+(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
+
+(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
+  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
+
+(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
+
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
+  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
+
+(unpin! org) ; there be bugs
+(package! org-contrib
+  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+           :files ("lisp/*.el"))
+  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
+
+(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
+
+(package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
+
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
+  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+
+(package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
+
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
+
+(package! org-graph-view
+  :recipe (:host github
+           :repo "alphapapa/org-graph-view"))
+
+(package! org-chef)
+
+(package! org-pandoc-import
+  :recipe (:host github
+           :repo "tecosaur/org-pandoc-import"
+           :files ("*.el" "filters" "preprocessors")))
+
+(package! org-cite-csl-activate
+  :recipe (:host github
+           :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
+
+(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
+
+(package! doct
+  :recipe (:host github :repo "progfolio/doct")
+  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
+
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
+(package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b")
+#+end_src
+
 * Lexical Bindings
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
@@ -382,11 +440,11 @@ irc                          ; how neckbeards socialize
 ** Fonts
 *** Set Fonts
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 21)
-      doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 32)
-      doom-variable-pitch-font (font-spec :family "Alegreya" :size 22)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 18)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 27)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
       doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
 #+end_src
 *** Mixed Pitch
 **** Basic Mixed Pitch Settings
@@ -405,7 +463,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
-(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 22))
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 20))
 
 (after! mixed-pitch
   (setq mixed-pitch-set-height t)
@@ -433,6 +491,38 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
          (set-face-attribute 'variable-pitch-serif nil :font value)
          (set-default-toplevel-value symbol value)))
 #+end_src
+*** New Mixed Pitch
+#+begin_src emacs-lisp :tangle no
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(after! mixed-pitch
+  (defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+  (setq mixed-pitch-set-height t)
+  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :weight 'medium' :size 16 ))
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
+
+#+end_src
+
 ** Modeline
 *** Show time
 #+begin_src emacs-lisp
@@ -521,6 +611,56 @@ At the moment I was able to fix this by:
 2. Enable =emoji+unicode= in =init.el=
 3. Run install commands for =all-the-icons= and =nerd-icons=
 
+** Writeroom
+#+begin_src emacs-lisp
+(setq +zen-text-scale 0.6)
+
+(defvar +zen-serif-p t
+  "Whether to use a serifed font with `mixed-pitch-mode'.")
+(defvar +zen-org-starhide t
+  "The value `org-modern-hide-stars' is set to.")
+
+(after! writeroom-mode
+  (defvar-local +zen--original-org-indent-mode-p nil)
+  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  (defun +zen-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (if writeroom-mode
+          (progn
+            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
+  (defun +zen-prose-org-h ()
+    "Reformat the current Org buffer appearance for prose."
+    (when (eq major-mode 'org-mode)
+      (setq display-line-numbers nil
+            visual-fill-column-width 60
+            org-adapt-indentation nil)
+      (when (featurep 'org-modern)
+        (setq-local org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗"))
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (setq
+       +zen--original-org-indent-mode-p org-indent-mode)
+      (org-indent-mode -1)))
+  (defun +zen-nonprose-org-h ()
+    "Reverse the effect of `+zen-prose-org'."
+    (when (eq major-mode 'org-mode)
+      (when (bound-and-true-p org-modern-mode)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (when +zen--original-org-indent-mode-p (org-indent-mode 1))))
+  (pushnew! writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-modern-mode
+            'org-modern-star
+            'org-modern-hide-stars)
+  (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
+  (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h))
+#+end_src
 * Buffer, Frame and Window Configuration
 ** Frame Config
 *** Frame sizing
@@ -548,13 +688,6 @@ At the moment I was able to fix this by:
   (consult-buffer))
 #+end_src
 * Packages
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle no
-:END:
-This section installs the relevant packages in =packages.el=
-#+begin_src emacs-lisp :tangle "packages.el" :comments no
-;; -*- no-byte-compile: t; -*-
-#+end_src
 ** Convenience
 *** Which-key
 #+begin_src emacs-lisp
@@ -637,11 +770,6 @@ cd aspell6-en-custom
       (expand-file-name "misc/ispell_personal" doom-private-dir))
 #+end_src
 *** Auto Snippets
-#+begin_src emacs-lisp :tangle packages.el
-(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! aas
   :commands aas-mode)
@@ -651,13 +779,9 @@ cd aspell6-en-custom
 (setq yas-triggers-in-field t)
 #+end_src
 *** Very Large Files
-#+begin_src emacs-lisp :tangle "packages.el"
-(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
-  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
-#+end_src
+To make VLF available without delaying startup, we'll just load it in quiet moments.
 
-Load VLF
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write
   vlf-search vlf-occur vlf-follow vlf-ediff vlf
@@ -670,7 +794,14 @@ Load VLF
   <<vlf-search-chunking>>)
 #+end_src
 
-Disable aggressive abort on opening large files
+Now, there are one or two tweaks worth applying to VLF. For starters, it goes to
+the liberty of advising ~abort-if-file-too-large~, and in doing so removes the
+option of opening files literally. I think that's a bit much, so we can remove
+the advice and instead override ~files--ask-user-about-large-file~ (the more
+appropriate function, I think) as a simpler approach, just sacrificing the
+original behaviour with src_elisp{(setq vlf-application 'always)} (which I can't
+imagine using anyway).
+
 #+name: vlf-largefile-prompt
 #+begin_src emacs-lisp :noweb-ref none
 (defadvice! +files--ask-about-large-file-vlf (size op-type filename offer-raw)
@@ -700,7 +831,11 @@ Disable aggressive abort on opening large files
                 (t 'abort)))))))
 #+end_src
 
-Change lines numbers while switching chunks
+As you go from one chunk fetched by VLF to the next, the displayed line number
+of the first line /in each chunk/ is unchanged. I think it's reasonable to hope
+for an /overall/ line number, and by tracking chunk's cumulative line numbers we
+can implement this behaviour fairly easily.
+
 #+name: vlf-linenum-offset
 #+begin_src emacs-lisp :noweb-ref none
 (defvar-local +vlf-cumulative-linenum '((0 . 0))
@@ -720,7 +855,12 @@ Change lines numbers while switching chunks
 ;; Since this only works with absolute line numbers, let's make sure we use them.
 (add-hook! 'vlf-mode-hook (setq-local display-line-numbers t))
 #+end_src
-Fix searching
+
+The other thing that doesn't work too well with VLF is searching with anything
+other than =M-x occur=. This is because trying to go to the next match at the end
+of a chunk usually wraps the point to the beginning of the chunk, instead of
+moving to the next chunk.
+
 #+name: vlf-search-chunking
 #+begin_src emacs-lisp :noweb-ref none
 (defun +vlf-next-chunk-or-start ()
@@ -742,12 +882,13 @@ Fix searching
 
 (add-hook! 'vlf-mode-hook (setq-local isearch-wrap-function #'+vlf-isearch-wrap))
 #+end_src
+
+Unfortunately, since evil-search doesn't have an analogue to
+~isearch-wrap-function~, we can't easily add support to it.
+
+
 ** Other Visual Settings
 *** Info Colours
-Improves manual pages
-#+begin_src emacs-lisp :tangle packages.el
-(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
-#+end_src
 Hook into =Info=
 #+begin_src emacs-lisp
 (use-package! info-colors
@@ -792,11 +933,6 @@ Hook into =Info=
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
 *** Prettier Page Breaks
-#+begin_src emacs-lisp :tangle packages.el
-(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
-  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! page-break-lines
   :commands page-break-lines-mode
@@ -807,60 +943,6 @@ Hook into =Info=
   (map! :prefix "g"
         :desc "Prev page break" :nv "[" #'backward-page
         :desc "Next page break" :nv "]" #'forward-page))
-#+end_src
-*** Writeroom
-#+begin_src emacs-lisp
-(setq +zen-text-scale 0.8)
-
-(defvar +zen-serif-p t
-  "Whether to use a serifed font with `mixed-pitch-mode'.")
-(defvar +zen-org-starhide t
-  "The value `org-modern-hide-stars' is set to.")
-
-(after! writeroom-mode
-  (defvar-local +zen--original-org-indent-mode-p nil)
-  (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defun +zen-enable-mixed-pitch-mode-h ()
-    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
-    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
-      (if writeroom-mode
-          (progn
-            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
-            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
-        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
-  (defun +zen-prose-org-h ()
-    "Reformat the current Org buffer appearance for prose."
-    (when (eq major-mode 'org-mode)
-      (setq display-line-numbers nil
-            visual-fill-column-width 60
-            org-adapt-indentation nil)
-      (when (featurep 'org-modern)
-        (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
-                    ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                    org-modern-hide-stars +zen-org-starhide)
-        (org-modern-mode -1)
-        (org-modern-mode 1))
-      (setq
-       +zen--original-org-indent-mode-p org-indent-mode)
-      (org-indent-mode -1)))
-  (defun +zen-nonprose-org-h ()
-    "Reverse the effect of `+zen-prose-org'."
-    (when (eq major-mode 'org-mode)
-      (when (bound-and-true-p org-modern-mode)
-        (org-modern-mode -1)
-        (org-modern-mode 1))
-      (when +zen--original-org-indent-mode-p (org-indent-mode 1))))
-  (pushnew! writeroom--local-variables
-            'display-line-numbers
-            'visual-fill-column-width
-            'org-adapt-indentation
-            'org-modern-mode
-            'org-modern-star
-            'org-modern-hide-stars)
-  (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
-  (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h))
-
-
 #+end_src
 ** Treemacs
 #+begin_src emacs-lisp
@@ -970,19 +1052,8 @@ Adding a regex for it to ~/.config/git/config
   xfuncname = "^(\\*+ +.*)$"
 #+end_src
 *** Packages
-**** Dev Org
-#+begin_src emacs-lisp :tangle packages.el
-(unpin! org) ; there be bugs
-(package! org-contrib
-  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
-           :files ("lisp/*.el"))
-  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
-  #+end_src
 **** Visuals
 ***** Org Modern
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
-#+end_src
 
 #+begin_src emacs-lisp
 (use-package! org-modern
@@ -1061,11 +1132,6 @@ Adding a regex for it to ~/.config/git/config
   (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
 #+end_src
 ***** Emphasis Markers
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)
@@ -1078,11 +1144,6 @@ Adding a regex for it to ~/.config/git/config
   (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
 ***** Heading Structure
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
-  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! org-ol-tree
   :commands org-ol-tree
@@ -1102,19 +1163,11 @@ Adding a regex for it to ~/.config/git/config
 #+end_src
 **** Some extra things
 ***** HTTP requests
-#+begin_src emacs-lisp :tangle packages.el
-(package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! ob-http
   :commands org-babel-execute:http)
 #+end_src
 ***** Transclusion
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion"))
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! org-transclusion
   :commands org-transclusion-mode
@@ -1122,36 +1175,19 @@ Adding a regex for it to ~/.config/git/config
   (map! :after org :map org-mode-map
         "<f12>" #'org-transclusion-mode))
 #+end_src
-***** Heading Graph
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-graph-view
-  :recipe (:host github
-           :repo "alphapapa/org-graph-view"))
-#+end_src
 ***** Cooking
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-chef)
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
 #+end_src
 ***** Importing with Pandoc
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-pandoc-import
-  :recipe (:host github
-           :repo "tecosaur/org-pandoc-import"
-           :files ("*.el" "filters" "preprocessors")))
-
-#+end_src
-
 #+begin_src emacs-lisp
 (use-package! org-pandoc-import
   :after org)
 #+end_src
-*** Default Config Tweaks
-****  Base Config
+*** Behaviour
+**** Default Config Tweaks
+*****  Base Config
 #+begin_src emacs-lisp
 (setq org-directory "~/org/"
       org-agenda-files (list org-directory)
@@ -1164,7 +1200,7 @@ Adding a regex for it to ~/.config/git/config
       org-image-actual-width '(0.9))
 
 #+end_src
-**** Org-Babel
+***** Org-Babel
 #+begin_src emacs-lisp
 (setq org-babel-default-header-args
       '((:session  . "none")
@@ -1176,12 +1212,12 @@ Adding a regex for it to ~/.config/git/config
         (:tangle   . "no")
         (:comments . "link")))
 #+end_src
-**** Visual Line Mode
+***** Visual Line Mode
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
 #+end_src
-**** Evil-Org
+***** Evil-Org
 #+begin_src emacs-lisp
 (map! :map evil-org-mode-map
       :after evil-org
@@ -1190,8 +1226,8 @@ Adding a regex for it to ~/.config/git/config
       :n "g <left>" #'org-up-element
       :n "g <right>" #'org-down-element)
 #+end_src
-*** Extra Functionality
-**** Zero-Width Spaces
+**** Extra Functionality
+***** Zero-Width Spaces
 #+begin_src emacs-lisp
 (map! :map org-mode-map
       :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
@@ -1204,11 +1240,11 @@ Adding a regex for it to ~/.config/git/config
 (after! ox
   (add-to-list 'org-export-filter-final-output-functions #'+org-export-remove-zero-width-space t))
 #+end_src
-**** List Bullet Sequence
+***** List Bullet Sequence
 #+begin_src emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 #+end_src
-**** Easier File Links
+***** Easier File Links
 #+begin_src emacs-lisp
 (defun +org-insert-file-link ()
   "Insert a file link.  At the prompt, enter the filename."
@@ -1220,13 +1256,7 @@ Adding a regex for it to ~/.config/git/config
       :localleader
       "l f" #'+org-insert-file-link)
 #+end_src
-**** Citation
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate
-  :recipe (:host github
-           :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
-#+end_src
-
+***** Citation
 #+begin_src emacs-lisp
 (use-package! oc-csl-activate
   :after oc
@@ -1305,7 +1335,7 @@ Adding a regex for it to ~/.config/git/config
                                  (cdr (assoc (match-string 1) cite-conversions))
                                  (match-string 2))))))))
 #+end_src
-**** LSP support in =src= blocks
+***** LSP support in =src= blocks
 #+begin_src emacs-lisp
 (cl-defmacro lsp-org-babel-enable (lang)
   "Support LANG in org source code block."
@@ -1336,7 +1366,7 @@ Adding a regex for it to ~/.config/git/config
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
 #+end_src
-**** View Exported file
+***** View Exported file
 #+begin_src emacs-lisp
 (map! :map org-mode-map
       :localleader
@@ -1366,11 +1396,7 @@ Adding a regex for it to ~/.config/git/config
 (defvar org-view-external-file-extensions '("html")
   "File formats that should be opened externally.")
 #+end_src
-*** Super Agenda
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
-#+end_src
-
+**** Super Agenda
 #+begin_src emacs-lisp
 (after! org-agenda
   (let ((inhibit-message t))
@@ -1437,14 +1463,7 @@ Adding a regex for it to ~/.config/git/config
                            :order 90)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
 #+end_src
-*** Capture
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! doct
-  :recipe (:host github :repo "progfolio/doct")
-  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
-#+end_src
-
-
+**** Capture
 #+begin_src emacs-lisp
 (use-package! doct
   :commands doct)
@@ -1731,4 +1750,556 @@ no modeline.
         (interactive)
         (set-window-parameter nil 'mode-line-format 'none)
         (org-capture)))
+#+end_src
+**** Roam
+***** Basic Settings
+#+begin_src emacs-lisp
+(setq org-roam-directory "~/org/roam/")
+#+end_src
+***** Modeline file name
+#+begin_src emacs-lisp
+(defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
+  :around #'doom-modeline-buffer-file-name ; takes no args
+  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+      (replace-regexp-in-string
+       "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+       "🢔(\\1-\\2-\\3) "
+       (subst-char-in-string ?_ ?  buffer-file-name))
+    (funcall orig-fun)))
+#+end_src
+***** Graph view
+#+begin_src emacs-lisp
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :commands org-roam-ui-open
+  :hook (org-roam . org-roam-ui-mode)
+  :config
+  (require 'org-roam) ; in case autoloaded
+  (defun org-roam-ui-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (unless org-roam-ui-mode (org-roam-ui-mode 1))
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
+#+end_src
+**** Nicer Generated Heading IDs
+#+begin_src emacs-lisp
+(defvar org-reference-contraction-max-words 3
+  "Maximum number of words in a reference reference.")
+(defvar org-reference-contraction-max-length 35
+  "Maximum length of resulting reference reference, including joining characters.")
+(defvar org-reference-contraction-stripped-words
+  '("the" "on" "in" "off" "a" "for" "by" "of" "and" "is" "to")
+  "Superfluous words to be removed from a reference.")
+(defvar org-reference-contraction-joining-char "-"
+  "Character used to join words in the reference reference.")
+
+(defun org-reference-contraction-truncate-words (words)
+  "Using `org-reference-contraction-max-length' as the total character 'budget' for the WORDS
+and truncate individual words to conform to this budget.
+
+To arrive at a budget that accounts for words undershooting their requisite average length,
+the number of characters in the budget freed by short words is distributed among the words
+exceeding the average length.  This adjusts the per-word budget to be the maximum feasable for
+this particular situation, rather than the universal maximum average.
+
+This budget-adjusted per-word maximum length is given by the mathematical expression below:
+
+max length = \\floor{ \\frac{total length - chars for seperators - \\sum_{word \\leq average length} length(word) }{num(words) > average length} }"
+  ;; trucate each word to a max word length determined by
+  ;;
+  (let* ((total-length-budget (- org-reference-contraction-max-length  ; how many non-separator chars we can use
+                                 (1- (length words))))
+         (word-length-budget (/ total-length-budget                      ; max length of each word to keep within budget
+                                org-reference-contraction-max-words))
+         (num-overlong (-count (lambda (word)                            ; how many words exceed that budget
+                                 (> (length word) word-length-budget))
+                               words))
+         (total-short-length (-sum (mapcar (lambda (word)                ; total length of words under that budget
+                                             (if (<= (length word) word-length-budget)
+                                                 (length word) 0))
+                                           words)))
+         (max-length (/ (- total-length-budget total-short-length)       ; max(max-length) that we can have to fit within the budget
+                        num-overlong)))
+    (mapcar (lambda (word)
+              (if (<= (length word) max-length)
+                  word
+                (substring word 0 max-length)))
+            words)))
+
+(defun org-reference-contraction (reference-string)
+  "Give a contracted form of REFERENCE-STRING that is only contains alphanumeric characters.
+Strips 'joining' words present in `org-reference-contraction-stripped-words',
+and then limits the result to the first `org-reference-contraction-max-words' words.
+If the total length is > `org-reference-contraction-max-length' then individual words are
+truncated to fit within the limit using `org-reference-contraction-truncate-words'."
+  (let ((reference-words
+         (-filter (lambda (word)
+                    (not (member word org-reference-contraction-stripped-words)))
+                  (split-string
+                   (->> reference-string
+                        downcase
+                        (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
+                        (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
+                        puny-encode-string
+                        (replace-regexp-in-string "^xn--\\(.*?\\) ?-?\\([a-z0-9]+\\)$" "\\2 \\1") ; rearrange punycode
+                        (replace-regexp-in-string "[^A-Za-z0-9 ]" "") ; strip chars which need %-encoding in a uri
+                        ) " +"))))
+    (when (> (length reference-words)
+             org-reference-contraction-max-words)
+      (setq reference-words
+            (cl-subseq reference-words 0 org-reference-contraction-max-words)))
+
+    (when (> (apply #'+ (1- (length reference-words))
+                    (mapcar #'length reference-words))
+             org-reference-contraction-max-length)
+      (setq reference-words (org-reference-contraction-truncate-words reference-words)))
+
+    (string-join reference-words org-reference-contraction-joining-char)))
+#+end_src
+
+alphapapa's tweaked mode.
+#+begin_src emacs-lisp
+(define-minor-mode unpackaged/org-export-html-with-useful-ids-mode
+  "Attempt to export Org as HTML with useful link IDs.
+Instead of random IDs like \"#orga1b2c3\", use heading titles,
+made unique when necessary."
+  :global t
+  (if unpackaged/org-export-html-with-useful-ids-mode
+      (advice-add #'org-export-get-reference :override #'unpackaged/org-export-get-reference)
+    (advice-remove #'org-export-get-reference #'unpackaged/org-export-get-reference)))
+(unpackaged/org-export-html-with-useful-ids-mode 1) ; ensure enabled, and advice run
+
+(defun unpackaged/org-export-get-reference (datum info)
+  "Like `org-export-get-reference', except uses heading titles instead of random numbers."
+  (let ((cache (plist-get info :internal-references)))
+    (or (car (rassq datum cache))
+        (let* ((crossrefs (plist-get info :crossrefs))
+               (cells (org-export-search-cells datum))
+               ;; Preserve any pre-existing association between
+               ;; a search cell and a reference, i.e., when some
+               ;; previously published document referenced a location
+               ;; within current file (see
+               ;; `org-publish-resolve-external-link').
+               ;;
+               ;; However, there is no guarantee that search cells are
+               ;; unique, e.g., there might be duplicate custom ID or
+               ;; two headings with the same title in the file.
+               ;;
+               ;; As a consequence, before re-using any reference to
+               ;; an element or object, we check that it doesn't refer
+               ;; to a previous element or object.
+               (new (or (cl-some
+                         (lambda (cell)
+                           (let ((stored (cdr (assoc cell crossrefs))))
+                             (when stored
+                               (let ((old (org-export-format-reference stored)))
+                                 (and (not (assoc old cache)) stored)))))
+                         cells)
+                        (when (org-element-property :raw-value datum)
+                          ;; Heading with a title
+                          (unpackaged/org-export-new-named-reference datum cache))
+                        (when (member (car datum) '(src-block table example fixed-width property-drawer))
+                          ;; Nameable elements
+                          (unpackaged/org-export-new-named-reference datum cache))
+                        ;; NOTE: This probably breaks some Org Export
+                        ;; feature, but if it does what I need, fine.
+                        (org-export-format-reference
+                         (org-export-new-reference cache))))
+               (reference-string new))
+          ;; Cache contains both data already associated to
+          ;; a reference and in-use internal references, so as to make
+          ;; unique references.
+          (dolist (cell cells) (push (cons cell new) cache))
+          ;; Retain a direct association between reference string and
+          ;; DATUM since (1) not every object or element can be given
+          ;; a search cell (2) it permits quick lookup.
+          (push (cons reference-string datum) cache)
+          (plist-put info :internal-references cache)
+          reference-string))))
+
+(defun unpackaged/org-export-new-named-reference (datum cache)
+  "Return new reference for DATUM that is unique in CACHE."
+  (cl-macrolet ((inc-suffixf (place)
+                             `(progn
+                                (string-match (rx bos
+                                                  (minimal-match (group (1+ anything)))
+                                                  (optional "--" (group (1+ digit)))
+                                                  eos)
+                                              ,place)
+                                ;; HACK: `s1' instead of a gensym.
+                                (-let* (((s1 suffix) (list (match-string 1 ,place)
+                                                           (match-string 2 ,place)))
+                                        (suffix (if suffix
+                                                    (string-to-number suffix)
+                                                  0)))
+                                  (setf ,place (format "%s--%s" s1 (cl-incf suffix)))))))
+    (let* ((headline-p (eq (car datum) 'headline))
+           (title (if headline-p
+                      (org-element-property :raw-value datum)
+                    (or (org-element-property :name datum)
+                        (concat (org-element-property :raw-value
+                                                      (org-element-property :parent
+                                                                            (org-element-property :parent datum)))))))
+           ;; get ascii-only form of title without needing percent-encoding
+           (ref (concat (org-reference-contraction (substring-no-properties title))
+                        (unless (or headline-p (org-element-property :name datum))
+                          (concat ","
+                                  (pcase (car datum)
+                                    ('src-block "code")
+                                    ('example "example")
+                                    ('fixed-width "mono")
+                                    ('property-drawer "properties")
+                                    (_ (symbol-name (car datum))))
+                                  "--1"))))
+           (parent (when headline-p (org-element-property :parent datum))))
+      (while (--any (equal ref (car it))
+                    cache)
+        ;; Title not unique: make it so.
+        (if parent
+            ;; Append ancestor title.
+            (setf title (concat (org-element-property :raw-value parent)
+                                "--" title)
+                  ;; get ascii-only form of title without needing percent-encoding
+                  ref (org-reference-contraction (substring-no-properties title))
+                  parent (when headline-p (org-element-property :parent parent)))
+          ;; No more ancestors: add and increment a number.
+          (inc-suffixf ref)))
+      ref)))
+
+(add-hook 'org-load-hook #'unpackaged/org-export-html-with-useful-ids-mode)
+#+end_src
+
+We also need to redefine src_elisp{(org-export-format-reference)} as it now maybe passed a string as well as a number.
+#+begin_src emacs-lisp
+(defadvice! org-export-format-reference-a (reference)
+  "Format REFERENCE into a string.
+
+REFERENCE is a either a number or a string representing a reference,
+as returned by `org-export-new-reference'."
+  :override #'org-export-format-reference
+  (if (stringp reference) reference (format "org%07x" reference)))
+#+end_src
+**** Nicer =org-return=
+#+begin_src emacs-lisp
+(defun unpackaged/org-element-descendant-of (type element)
+  "Return non-nil if ELEMENT is a descendant of TYPE.
+TYPE should be an element type, like `item' or `paragraph'.
+ELEMENT should be a list like that returned by `org-element-context'."
+  ;; MAYBE: Use `org-element-lineage'.
+  (when-let* ((parent (org-element-property :parent element)))
+    (or (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
+
+;;;###autoload
+(defun unpackaged/org-return-dwim (&optional default)
+  "A helpful replacement for `org-return-indent'.  With prefix, call `org-return-indent'.
+
+On headings, move point to position after entry content.  In
+lists, insert a new item or end the list, with checkbox if
+appropriate.  In tables, insert a new row or end the table."
+  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+  (interactive "P")
+  (if default
+      (org-return t)
+    (cond
+     ;; Act depending on context around point.
+
+     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+     ;; followed.
+
+     ;; ((eq 'link (car (org-element-context)))
+     ;;  ;; Link: Open it.
+     ;;  (org-open-at-point-global))
+
+     ((org-at-heading-p)
+      ;; Heading: Move to position after entry content.
+      ;; NOTE: This is probably the most interesting feature of this function.
+      (let ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (cond ((and (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               ;; Entry ends on its heading; add newline after
+               (end-of-line)
+               (insert "\n\n"))
+              (t
+               ;; Entry ends after its heading; back up
+               (forward-line -1)
+               (end-of-line)
+               (when (org-at-heading-p)
+                 ;; At the same heading
+                 (forward-line)
+                 (insert "\n")
+                 (forward-line -1))
+               (while (not (looking-back "\\(?:[[:blank:]]?\n\\)\\{3\\}" nil))
+                 (insert "\n"))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      ;; Checkbox: Insert new item with checkbox.
+      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      ;; Plain list.  Yes, this gets a little complicated...
+      (let ((context (org-element-context)))
+        (if (or (eq 'plain-list (car context))  ; First item in list
+                (and (eq 'item (car context))
+                     (not (eq (org-element-property :contents-begin context)
+                              (org-element-property :contents-end context))))
+                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
+            ;; Non-empty item: Add new item.
+            (org-insert-item)
+          ;; Empty item: Close the list.
+          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert "\n"))))
+
+     ((when (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      ;; Inline task: Don't insert a new heading.
+      (org-return t))
+
+     ((org-at-table-p)
+      (cond ((save-excursion
+               (beginning-of-line)
+               ;; See `org-table-next-field'.
+               (cl-loop with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property :contents-begin cell)
+                                      (org-element-property :contents-end cell))
+                        while (re-search-forward "|" end t)))
+             ;; Empty row: end the table.
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return t))
+            (t
+             ;; Non-empty row: call `org-return-indent'.
+             (org-return t))))
+     (t
+      ;; All other cases: call `org-return-indent'.
+      (org-return t)))))
+
+(map!
+ :after evil-org
+ :map evil-org-mode-map
+ :i [return] #'unpackaged/org-return-dwim)
+#+end_src
+**** Snippet Helpers
+#+begin_src emacs-lisp
+(defun +yas/org-src-header-p ()
+  "Determine whether `point' is within a src-block header or header-args."
+  (pcase (org-element-type (org-element-context))
+    ('src-block (< (point) ; before code part of the src-block
+                   (save-excursion (goto-char (org-element-property :begin (org-element-context)))
+                                   (forward-line 1)
+                                   (point))))
+    ('inline-src-block (< (point) ; before code part of the inline-src-block
+                          (save-excursion (goto-char (org-element-property :begin (org-element-context)))
+                                          (search-forward "]{")
+                                          (point))))
+    ('keyword (string-match-p "^header-args" (org-element-property :value (org-element-context))))))
+#+end_src
+
+Now let's write a function we can reference in yasnippets to produce a nice
+interactive way to specify header args.
+
+#+begin_src emacs-lisp
+(defun +yas/org-prompt-header-arg (arg question values)
+  "Prompt the user to set ARG header property to one of VALUES with QUESTION.
+The default value is identified and indicated. If either default is selected,
+or no selection is made: nil is returned."
+  (let* ((src-block-p (not (looking-back "^#\\+property:[ \t]+header-args:.*" (line-beginning-position))))
+         (default
+           (or
+            (cdr (assoc arg
+                        (if src-block-p
+                            (nth 2 (org-babel-get-src-block-info t))
+                          (org-babel-merge-params
+                           org-babel-default-header-args
+                           (let ((lang-headers
+                                  (intern (concat "org-babel-default-header-args:"
+                                                  (+yas/org-src-lang)))))
+                             (when (boundp lang-headers) (eval lang-headers t)))))))
+            ""))
+         default-value)
+    (setq values (mapcar
+                  (lambda (value)
+                    (if (string-match-p (regexp-quote value) default)
+                        (setq default-value
+                              (concat value " "
+                                      (propertize "(default)" 'face 'font-lock-doc-face)))
+                      value))
+                  values))
+    (let ((selection (consult--read values :prompt question :default default-value)))
+      (unless (or (string-match-p "(default)$" selection)
+                  (string= "" selection))
+        selection))))
+#+end_src
+
+Finally, we fetch the language information for new source blocks.
+
+Since we're getting this info, we might as well go a step further and also
+provide the ability to determine the most popular language in the buffer that
+doesn't have any =header-args= set for it (with =#+properties=).
+
+#+begin_src emacs-lisp
+(defun +yas/org-src-lang ()
+  "Try to find the current language of the src/header at `point'.
+Return nil otherwise."
+  (let ((context (org-element-context)))
+    (pcase (org-element-type context)
+      ('src-block (org-element-property :language context))
+      ('inline-src-block (org-element-property :language context))
+      ('keyword (when (string-match "^header-args:\\([^ ]+\\)" (org-element-property :value context))
+                  (match-string 1 (org-element-property :value context)))))))
+
+(defun +yas/org-last-src-lang ()
+  "Return the language of the last src-block, if it exists."
+  (save-excursion
+    (beginning-of-line)
+    (when (re-search-backward "^[ \t]*#\\+begin_src" nil t)
+      (org-element-property :language (org-element-context)))))
+
+(defun +yas/org-most-common-no-property-lang ()
+  "Find the lang with the most source blocks that has no global header-args, else nil."
+  (let (src-langs header-langs)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*#\\+begin_src" nil t)
+        (push (+yas/org-src-lang) src-langs))
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*#\\+property: +header-args" nil t)
+        (push (+yas/org-src-lang) header-langs)))
+
+    (setq src-langs
+          (mapcar #'car
+                  ;; sort alist by frequency (desc.)
+                  (sort
+                   ;; generate alist with form (value . frequency)
+                   (cl-loop for (n . m) in (seq-group-by #'identity src-langs)
+                            collect (cons n (length m)))
+                   (lambda (a b) (> (cdr a) (cdr b))))))
+
+    (car (cl-set-difference src-langs header-langs :test #'string=))))
+#+end_src
+**** Fix Problem Hooks
+#+begin_src emacs-lisp
+(defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
+  :around #'org-fancy-priorities-mode
+  (ignore-errors (apply orig-fn args)))
+#+end_src
+*** Visuals
+**** Font Display
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+#+end_src
+
+Bigger Headings and title
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(org-document-title :height 1.2)
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+#+end_src
+
+Use error face for agenda deadlines
+#+begin_src emacs-lisp
+(setq org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
+#+end_src
+
+/Italic/ src code blocks
+#+begin_src emacs-lisp
+(setq org-fontify-quote-and-verse-blocks t)
+#+end_src
+
+Defer font lock
+#+begin_src emacs-lisp
+(defun locally-defer-font-lock ()
+  "Set jit-lock defer and stealth, when buffer is over a certain size."
+  (when (> (buffer-size) 50000)
+    (setq-local jit-lock-defer-time 0.05
+                jit-lock-stealth-time 1)))
+
+(add-hook 'org-mode-hook #'locally-defer-font-lock)
+
+#+end_src
+**** Reduced text indent
+#+begin_src emacs-lisp
+(defadvice! +org-indent--reduced-text-prefixes ()
+  :after #'org-indent--compute-prefixes
+  (setq org-indent--text-line-prefixes
+        (make-vector org-indent--deepest-level nil))
+  (when (> org-indent-indentation-per-level 0)
+    (dotimes (n org-indent--deepest-level)
+      (aset org-indent--text-line-prefixes
+            n
+            (org-add-props
+                (concat (make-string (* n (1- org-indent-indentation-per-level))
+                                     ?\s)
+                        (if (> n 0)
+                             (char-to-string org-indent-boundary-char)
+                          "\u200b"))
+                nil 'face 'org-indent)))))
+#+end_src
+**** Fontify inline src Blocks
+#+begin_src emacs-lisp
+(setq org-inline-src-prettify-results '("⟨" . "⟩"))
+(setq doom-themes-org-fontify-special-tags nil)
+#+end_src
+**** Symbols
+#+begin_src emacs-lisp
+(setq org-ellipsis " ▾ "
+      org-hide-leading-stars t
+      org-priority-highest ?A
+      org-priority-lowest ?E
+      org-priority-faces
+      '((?A . 'all-the-icons-red)
+        (?B . 'all-the-icons-orange)
+        (?C . 'all-the-icons-yellow)
+        (?D . 'all-the-icons-green)
+        (?E . 'all-the-icons-blue)))
+
+(appendq! +ligatures-extra-symbols
+          (list :list_property "∷"
+                :em_dash       "—"
+                :ellipses      "…"
+                :arrow_right   "→"
+                :arrow_left    "←"
+                :arrow_lr      "↔"
+                :properties    "⚙"
+                :end           "∎"
+                :priority_a    #("⚑" 0 1 (face all-the-icons-red))
+                :priority_b    #("⬆" 0 1 (face all-the-icons-orange))
+                :priority_c    #("■" 0 1 (face all-the-icons-yellow))
+                :priority_d    #("⬇" 0 1 (face all-the-icons-green))
+                :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
+
+(defadvice! +org-init-appearance-h--no-ligatures-a ()
+  :after #'+org-init-appearance-h
+  (set-ligatures! 'org-mode nil)
+  (set-ligatures! 'org-mode
+    :list_property "::"
+    :em_dash       "---"
+    :ellipsis      "..."
+    :arrow_right   "->"
+    :arrow_left    "<-"
+    :arrow_lr      "<->"
+    :properties    ":PROPERTIES:"
+    :end           ":END:"
+    :priority_a    "[#A]"
+    :priority_b    "[#B]"
+    :priority_c    "[#C]"
+    :priority_d    "[#D]"
+    :priority_e    "[#E]"))
 #+end_src
