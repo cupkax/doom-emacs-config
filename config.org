@@ -8,6 +8,8 @@
 #+options: coverpage:yes
 #+startup: fold
 
+
+
 * Doom Init
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
@@ -124,7 +126,7 @@ multiple-cursors             ; editing in many places at once
 ;;parinfer                   ; turn lisp into python, sort of
 rotate-text                  ; cycle region at point between text candidates
 snippets                     ; my elves. They type so I don't have to
-;;word-wrap                  ; soft wrapping with language-aware indent
+word-wrap                  ; soft wrapping with language-aware indent
 #+end_src
 
 #+name: doom-emacs
@@ -463,7 +465,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
-(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 20))
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 24))
 
 (after! mixed-pitch
   (setq mixed-pitch-set-height t)
@@ -513,7 +515,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     "A variable-pitch face with serifs."
     :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :weight 'medium' :size 16 ))
+  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :weight 'medium' :size 20 ))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -613,7 +615,7 @@ At the moment I was able to fix this by:
 
 ** Writeroom
 #+begin_src emacs-lisp
-(setq +zen-text-scale 0.6)
+(setq +zen-text-scale 0.8)
 
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
@@ -635,7 +637,7 @@ At the moment I was able to fix this by:
     "Reformat the current Org buffer appearance for prose."
     (when (eq major-mode 'org-mode)
       (setq display-line-numbers nil
-            visual-fill-column-width 60
+            visual-fill-column-width 80
             org-adapt-indentation nil)
       (when (featurep 'org-modern)
         (setq-local org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗"))
@@ -661,49 +663,7 @@ At the moment I was able to fix this by:
   (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
   (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h))
 #+end_src
-* Buffer, Frame and Window Configuration
-** Frame Config
-*** Frame sizing
-#+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(height . 24))
-(add-to-list 'default-frame-alist '(width . 80))
-#+end_src
-** Window Config
-*** Window Navigation
-#+begin_src emacs-lisp
-(map!
- :leader
- :desc "Switch to Left Window"  "<left>"    #'evil-window-left
- :desc "Switch to Right Window" "<right>"   #'evil-window-right
- :desc "Switch to Up Window"    "<up>"      #'evil-window-up
- :desc "Switch to Down Window"  "<down>"    #'evil-window-down)
-
-#+end_src
-*** Window Split
-#+begin_src emacs-lisp
-(setq evil-vsplit-window-right t
-      evil-split-window-below  t)
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (consult-buffer))
-#+end_src
-* Packages
-** Convenience
-*** Which-key
-#+begin_src emacs-lisp
-(setq which-key-idle-delay 0)
-
-;; Replace evil- with a symbol
-(setq which-key-allow-multiple-replacements t)
-(after! which-key
-  (pushnew!
-   which-key-replacement-alist
-   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
-   ))
-#+end_src
-** Tools
-*** Company
+* Company
 #+begin_src emacs-lisp
 (after! company
   (setq company-idle-delay 0.5
@@ -723,6 +683,8 @@ At the moment I was able to fix this by:
     company-ispell
     company-files
     company-yasnippet))
+
+ (use-package! company :config (setq +company-backend-alist (assq-delete-all 'text-mode +company-backend-alist)) (add-to-list '+company-backend-alist '(text-mode (:separate company-dabbrev company-yasnippet))))
 #+end_src
 *** Consult
 Disable face for differing buffers as Marginalia handles it
@@ -765,7 +727,8 @@ cd aspell6-en-custom
 #+end_src
 **** Configuration
 #+begin_src emacs-lisp
-(setq ispell-dictionary "en-custom")
+(setq ispell-dictionary "en-custom"
+      company-ispell-dictionary "en-custom")
 (setq ispell-personal-dictionary
       (expand-file-name "misc/ispell_personal" doom-private-dir))
 #+end_src
@@ -1211,6 +1174,15 @@ Adding a regex for it to ~/.config/git/config
         (:hlines   . "no")
         (:tangle   . "no")
         (:comments . "link")))
+;; Org block templates
+(setq org-structure-template-alist
+      '(("el" . "src emacs-lisp")))
+
+
+(after! org
+  (setq org-return-follows-link t
+        org-babel-load-languages '((emacs-lisp . t)
+                             (dot . t))))
 #+end_src
 ***** Visual Line Mode
 #+begin_src emacs-lisp
