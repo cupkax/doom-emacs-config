@@ -179,7 +179,7 @@ rgb                          ; creating color strings
 ;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
-tree-sitter                  ; syntax and parsing, sitting in a tree...
+;;tree-sitter                  ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
@@ -206,8 +206,7 @@ data                         ; config/data formats
 ;;elm                        ; care for a cup of TEA?
 emacs-lisp                   ; drown in parentheses
 ;;erlang                     ; an elegant language for a more civilized age
-(ess
- +tree-sitter)               ; emacs speaks statistics
+ess               ; emacs speaks statistics
 ;;faust                      ; dsp, but you get to keep your soul
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
@@ -261,16 +260,14 @@ plantuml                   ; diagrams for confusing people more
 ;;scala                      ; java, but good
 ;;scheme                       ; a fully conniving family of lisps
 (sh
- +lsp
- +tree-sitter)                           ; she sells {ba,z,fi}sh shells on the C xor
+ +lsp)                           ; she sells {ba,z,fi}sh shells on the C xor
 ;;sml                        ; no, the /other/ ML
 ;;solidity                   ; do you need a blockchain? No.
 ;;swift                      ; who asked for emoji variables?
 ;;terra                      ; Earth and Moon in alignment for performance.
 web                          ; the tubes
 (yaml
- +lsp
- +tree-sitter)                         ; JSON, but readable
+ +lsp)                         ; JSON, but readable
 ;;zig                        ; C, but simpler
 #+end_src
 
@@ -442,7 +439,7 @@ irc                          ; how neckbeards socialize
 ** Fonts
 *** Set Fonts
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 18)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 24)
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 27)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
       doom-unicode-font (font-spec :family "JuliaMono")
@@ -1023,8 +1020,8 @@ Adding a regex for it to ~/.config/git/config
   :hook (org-mode . org-modern-mode)
   :config
   (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
-        org-modern-table-vertical 1
-        org-modern-table-horizontal 0.2
+        org-modern-table-vertical nil
+        org-modern-table-horizontal nil
         org-modern-list '((43 . "➤")
                           (45 . "–")
                           (42 . "•"))
