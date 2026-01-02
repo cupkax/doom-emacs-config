@@ -1,9 +1,0 @@
-[submodule "lisp/autocorrect"]
-	path = lisp/autocorrect
-	url = https://code.tecosaur.net/tec/autocorrect.git
-[submodule "lisp/org-pandoc-import"]
-	path = lisp/org-pandoc-import
-	url = https://code.tecosaur.net/tec/org-pandoc-import
-[submodule "lisp/engrave-faces"]
-	path = lisp/engrave-faces
-	url = https://code.tecosaur.net/tec/engrave-faces
